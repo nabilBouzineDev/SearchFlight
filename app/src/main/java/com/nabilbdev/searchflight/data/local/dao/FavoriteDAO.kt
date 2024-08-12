@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.nabilbdev.searchflight.data.local.entity.Airport
 import com.nabilbdev.searchflight.data.local.entity.Favorite
 import kotlinx.coroutines.flow.Flow
 

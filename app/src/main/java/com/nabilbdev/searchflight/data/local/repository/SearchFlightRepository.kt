@@ -1,4 +1,4 @@
-package com.nabilbdev.searchflight.data.repository
+package com.nabilbdev.searchflight.data.local.repository
 
 import com.nabilbdev.searchflight.data.local.dao.AirportDAO
 import com.nabilbdev.searchflight.data.local.dao.FavoriteDAO
@@ -12,9 +12,11 @@ interface SearchFlightRepository {
 
     fun getAllAirportsExceptStream(airportCode: String): Flow<List<Airport>>
 
-    fun getAirportsByCodeStream(airportCode: String): Flow<Airport>
+    fun getAirportByCodeStream(airportCode: String): Flow<Airport?>
 
     fun getAllFavoriteAirportsStream(): Flow<List<Favorite>>
+
+    fun getAllAirportsStream(): Flow<List<Airport>>
 
     suspend fun insertFavoriteAirport(favorite: Favorite)
 
@@ -32,11 +34,14 @@ class OfflineSearchFlightRepository(
     override fun getAllAirportsExceptStream(airportCode: String): Flow<List<Airport>> =
         airportDAO.getAllAirportsExcept(airportCode)
 
-    override fun getAirportsByCodeStream(airportCode: String): Flow<Airport> =
-        airportDAO.getAirportsByCode(airportCode)
+    override fun getAirportByCodeStream(airportCode: String): Flow<Airport?> =
+        airportDAO.getAirportByCode(airportCode)
 
     override fun getAllFavoriteAirportsStream(): Flow<List<Favorite>> =
         favoriteDAO.getAllFavoriteAirports()
+
+    override fun getAllAirportsStream(): Flow<List<Airport>> =
+        airportDAO.getAllAirports()
 
     override suspend fun insertFavoriteAirport(favorite: Favorite) =
         favoriteDAO.insert(favorite)

@@ -1,4 +1,4 @@
-package com.nabilbdev.searchflight
+package data.local.dao
 
 import android.content.Context
 import androidx.room.Room
@@ -10,7 +10,7 @@ import com.nabilbdev.searchflight.data.local.entity.Favorite
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,14 +50,37 @@ class FavoriteDAOTest {
     }
 
     private suspend fun addTwoFavoriteToDB() {
+        favoriteDAO.insert(favorite1)
         favoriteDAO.insert(favorite2)
     }
 
     @Test
     @Throws(IOException::class)
-    fun daoInsert_InsertFavoritesToDB() = runBlocking {
+    fun daoInsert_insertFavoritesToDB() = runBlocking {
         addOneFavoriteToDB()
-        val allItems = favoriteDAO.getAllFavoriteAirports().first()
-        Assert.assertEquals(allItems[0], favorite1)
+        val allFavorites = favoriteDAO.getAllFavoriteAirports().first()
+
+        assertEquals(allFavorites[0], favorite1)
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun daoDelete_deleteFavoritesFromDB() = runBlocking {
+        addTwoFavoriteToDB()
+        favoriteDAO.delete(favorite1)
+        favoriteDAO.delete(favorite2)
+
+        val allFavorites = favoriteDAO.getAllFavoriteAirports().first()
+        assertTrue(allFavorites.isEmpty())
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun daoGetAllFavorites_returnAllFavoritesFromDB() = runBlocking {
+        addTwoFavoriteToDB()
+        val allFavorites = favoriteDAO.getAllFavoriteAirports().first()
+
+        assertEquals(allFavorites[0], favorite1)
+        assertEquals(allFavorites[1], favorite2)
     }
 }
