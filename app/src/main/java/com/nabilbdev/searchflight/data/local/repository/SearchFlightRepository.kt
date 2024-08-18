@@ -18,6 +18,8 @@ interface SearchFlightRepository {
 
     fun getAllAirportsStream(): Flow<List<Airport>>
 
+    fun getAllAirportsOrderedByPassengersStream(): Flow<List<Airport>>
+
     suspend fun insertFavoriteAirport(favorite: Favorite)
 
     suspend fun deleteFavoriteAirport(favorite: Favorite)
@@ -42,6 +44,9 @@ class OfflineSearchFlightRepository(
 
     override fun getAllAirportsStream(): Flow<List<Airport>> =
         airportDAO.getAllAirports()
+
+    override fun getAllAirportsOrderedByPassengersStream(): Flow<List<Airport>> =
+        airportDAO.getAllAirportsOrderedByPassengers()
 
     override suspend fun insertFavoriteAirport(favorite: Favorite) =
         favoriteDAO.insert(favorite)

@@ -57,6 +57,15 @@ class OfflineSearchFlightRepositoryTest {
     }
 
     @Test
+    fun testGetAirportOrderedByPassengers_returnsListOfFourAirport() = runBlocking {
+        val result = offlineSearchFlightRepo.getAllAirportsOrderedByPassengersStream().first()
+
+        assertEquals(result.size, 4)
+        assertTrue(result[0].passengers > result[1].passengers)
+        assertTrue(result[1].passengers > result[2].passengers)
+    }
+
+    @Test
     fun testGetAllAirports_returnsCompleteListOfAirports() = runBlocking {
         val result = offlineSearchFlightRepo.getAllAirportsStream().first()
         assertEquals(result.size, fakeAirports.size)
