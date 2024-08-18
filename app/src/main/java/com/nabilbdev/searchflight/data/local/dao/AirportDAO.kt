@@ -21,4 +21,7 @@ interface AirportDAO {
 
     @Query("SELECT * FROM airport")
     fun getAllAirports(): Flow<List<Airport>>
+
+    @Query("SELECT * FROM airport  ORDER BY passengers DESC")
+    fun getAllAirportsOrderedByPassengers(): Flow<List<Airport>>
 }

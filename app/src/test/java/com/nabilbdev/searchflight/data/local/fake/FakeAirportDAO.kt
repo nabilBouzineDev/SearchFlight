@@ -34,4 +34,8 @@ class FakeAirportDAO : AirportDAO {
     override fun getAllAirports(): Flow<List<Airport>> = flow {
         emit(airports)
     }
+
+    override fun getAllAirportsOrderedByPassengers(): Flow<List<Airport>>  = flow {
+        emit(airports.sortedByDescending { it.passengers }.take(4))
+    }
 }

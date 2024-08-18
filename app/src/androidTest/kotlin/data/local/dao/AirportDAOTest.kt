@@ -34,6 +34,20 @@ private val airport2 = Airport(
     7494765
 )
 
+// Sample sorted data by passengers from the actual database to test sorting
+private val airport3 = Airport(
+    28,
+    "Munich International Airport",
+    "MUC",
+    47959885
+)
+private val airport4 = Airport(
+    7,
+    "Sheremetyevo - A.S. Pushkin international airport",
+    "SVO",
+    49933000
+)
+
 @RunWith(AndroidJUnit4::class)
 class AirportDAOTest {
 
@@ -65,6 +79,18 @@ class AirportDAOTest {
         assertTrue(allAirports.isNotEmpty())
         assertEquals(allAirports[0], airport1)
         assertEquals(allAirports[1], airport2)
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun daoGetAllAirportsOrderedByPassengers_returnAllAirportsWithCorrectSorting() = runBlocking {
+        val allAirports = airportDAO.getAllAirportsOrderedByPassengers().first()
+
+        assertTrue(allAirports.isNotEmpty())
+
+        assertTrue(airport3.passengers < airport4.passengers) // True So airport4 must be first
+        assertEquals(allAirports[0], airport4)
+        assertEquals(allAirports[1], airport3)
     }
 
     @Test
