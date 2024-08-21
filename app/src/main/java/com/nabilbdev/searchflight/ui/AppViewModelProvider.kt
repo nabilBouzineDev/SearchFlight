@@ -6,7 +6,8 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nabilbdev.searchflight.SearchFlightApplication
-import com.nabilbdev.searchflight.ui.screens.search.SearchScreenViewModel
+import com.nabilbdev.searchflight.ui.screens.home.HomeViewModel
+import com.nabilbdev.searchflight.ui.screens.search.SearchViewModel
 
 /**
  * Provides Factory to create instance of ViewModel for the entire SearchFlight app
@@ -14,7 +15,12 @@ import com.nabilbdev.searchflight.ui.screens.search.SearchScreenViewModel
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
-            SearchScreenViewModel(
+            SearchViewModel(
+                searchFlightRepository = searchFLightApplication().container.searchFlightRepository
+            )
+        }
+        initializer {
+            HomeViewModel(
                 searchFlightRepository = searchFLightApplication().container.searchFlightRepository
             )
         }
