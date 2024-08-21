@@ -13,11 +13,12 @@ import androidx.compose.ui.Modifier
 @Composable
 fun FilterChipWrapper(
     selected: Boolean = false,
+    onSelectChip: () -> Unit = {},
     label: String = ""
 ) {
     FilterChip(
         selected = selected,
-        onClick = { selected != selected },
+        onClick = onSelectChip,
         label = { Text(text = label) },
         leadingIcon = if (selected) {
             {

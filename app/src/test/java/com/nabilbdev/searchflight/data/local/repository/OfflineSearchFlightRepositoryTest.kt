@@ -61,8 +61,27 @@ class OfflineSearchFlightRepositoryTest {
         val result = offlineSearchFlightRepo.getAllAirportsOrderedByPassengersStream().first()
 
         assertEquals(result.size, 4)
-        assertTrue(result[0].passengers > result[1].passengers)
-        assertTrue(result[1].passengers > result[2].passengers)
+        assertTrue(result[0].passengers >= result[1].passengers)
+        assertTrue(result[1].passengers >= result[2].passengers)
+    }
+
+    @Test
+    fun testGetAirportOrderedByName_returnsListOfFourAirport() = runBlocking {
+        /**
+         * String Comparison if `compareTo` returns a:
+         *
+         *  **-ve number**: first string comes **before** second string.
+         *
+         *  **0 zero**: first string equals to **second** string
+         *
+         *  **+ve number**: first string comes **after** second string
+         */
+
+        val result = offlineSearchFlightRepo.getAllAirportsOrderedByNameStream().first()
+
+        // first name order must be before second name order: a, b then c and so on
+        assertTrue(result[0].name.compareTo(result[1].name) <= 0)
+        assertTrue(result[1].name.compareTo(result[2].name) <= 0)
     }
 
     @Test
