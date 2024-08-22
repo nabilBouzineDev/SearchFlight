@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.dp
 import com.nabilbdev.searchflight.R
 
 @Composable
-fun HideFilterDropdownMenu(
+fun ShowFilterDropdownMenu(
     showFiltersSelected: Boolean,
-    onHideFilters: () -> Unit = {}
+    onShowFilters: () -> Unit = {}
 ) {
 
     /**
@@ -48,7 +48,7 @@ fun HideFilterDropdownMenu(
                 },
                 onClick = {
                     isExpanded = false
-                    onHideFilters()
+                    onShowFilters()
                 },
                 leadingIcon = {
                     if (showFiltersSelected)

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nabilbdev.searchflight.data.local.entity.Airport
 import com.nabilbdev.searchflight.data.local.repository.SearchFlightRepository
+import com.nabilbdev.searchflight.data.local.repository.UserPreferencesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +39,8 @@ data class SelectUiState(
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class SearchViewModel(
-    private val searchFlightRepository: SearchFlightRepository
+    private val searchFlightRepository: SearchFlightRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
     /**
@@ -47,7 +49,7 @@ class SearchViewModel(
     private val _searchQuery = MutableStateFlow("")
     private val _airportListByQuery = MutableStateFlow<List<Airport>>(emptyList())
     private val _allAirportList = MutableStateFlow<List<Airport>>(emptyList())
-    private val _hideFilters = MutableStateFlow(false)
+    private val _showFilters = MutableStateFlow(false)
     private val _mostVisitedSelected = MutableStateFlow(false)
     private val _byNameSelected = MutableStateFlow(false)
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -58,11 +60,11 @@ class SearchViewModel(
      * A Ui State that expose updates related to filtering and get airports list to the UI
      */
     val selectUiState: StateFlow<SelectUiState> = combine(
-        _allAirportList, _hideFilters, _mostVisitedSelected, _byNameSelected
-    ) { allAirportList, hideFilters, mostVisitedSelected, byNameSelected ->
+        _allAirportList, _showFilters, _mostVisitedSelected, _byNameSelected
+    ) { allAirportList, showFilters, mostVisitedSelected, byNameSelected ->
         SelectUiState(
             allAirportList = allAirportList,
-            showFilters = hideFilters,
+            showFilters = showFilters,
             mostVisitedSelected = mostVisitedSelected,
             byNameSelected = byNameSelected
         )
@@ -142,6 +144,21 @@ class SearchViewModel(
                 }
             }
             .launchIn(viewModelScope)
+
+        // Collect all filter preferences and update the state
+        viewModelScope.launch {
+            userPreferencesRepository.showFilters
+                .collect { showFilters ->
+                    _showFilters.value = showFilters
+                }
+        }
+
+        // Save the showFilters state when it changes
+        _showFilters
+            .mapLatest { showFilters ->
+                userPreferencesRepository.saveShowFiltersPreference(showFilters)
+            }
+            .launchIn(viewModelScope)
     }
 
     /**
@@ -209,9 +226,9 @@ class SearchViewModel(
         _byNameSelected.value = !_byNameSelected.value
     }
 
-    fun onHideFilters() {
+    fun onShowFilters() {
         clearFilters()
-        _hideFilters.value = !_hideFilters.value
+        _showFilters.value = !_showFilters.value
     }
 
     companion object {

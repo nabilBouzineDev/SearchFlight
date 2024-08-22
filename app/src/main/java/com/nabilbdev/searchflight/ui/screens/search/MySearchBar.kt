@@ -20,7 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nabilbdev.searchflight.data.local.entity.Airport
-import com.nabilbdev.searchflight.ui.components.HideFilterDropdownMenu
+import com.nabilbdev.searchflight.ui.components.ShowFilterDropdownMenu
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,9 +73,9 @@ fun MySearchBar(
         trailingIcon = {
             if (active) {
                 if (query.isEmpty()) {
-                    HideFilterDropdownMenu(
+                    ShowFilterDropdownMenu(
                         showFiltersSelected = showFiltersSelected,
-                        onHideFilters = viewModel::onHideFilters,
+                        onShowFilters = viewModel::onShowFilters,
                     )
                 } else {
                     Icon(
