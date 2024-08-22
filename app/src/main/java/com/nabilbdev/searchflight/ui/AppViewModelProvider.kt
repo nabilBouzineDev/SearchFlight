@@ -16,7 +16,8 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             SearchViewModel(
-                searchFlightRepository = searchFLightApplication().container.searchFlightRepository
+                searchFlightRepository = searchFLightApplication().container.searchFlightRepository,
+                userPreferencesRepository = searchFLightApplication().userPreferencesRepository
             )
         }
         initializer {
