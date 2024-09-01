@@ -18,20 +18,21 @@ import com.nabilbdev.searchflight.ui.components.FilterChipWrapper
 
 @Composable
 fun SearchScreen(
-    query: String,
-    errorMessage: String?,
-    allAirportsList: List<Airport>,
-    airportListByQuery: List<Airport>,
-    showFiltersSelected: Boolean,
-    mostVisitedSelected: Boolean,
-    byNameSelected: Boolean,
-    viewModel: SearchViewModel,
     modifier: Modifier = Modifier,
+    query: String = "",
+    errorMessage: String? = null,
+    allAirportsList: List<Airport> = emptyList(),
+    airportListByQuery: List<Airport> = emptyList(),
+    showFiltersSelected: Boolean = false,
+    byPassengersSelected: Boolean = false,
+    byNameSelected: Boolean = false,
+    viewModel: SearchViewModel,
+    onNavigateToAirportRouteSelection: (Airport) -> Unit = {}
 ) {
     if (query.isEmpty()) {
         if (!showFiltersSelected) {
             FilterSelection(
-                mostVisitedSelected = mostVisitedSelected,
+                byPassengersSelected = byPassengersSelected,
                 byNameSelected = byNameSelected,
                 onSelectMostVisited = viewModel::onSelectMostVisited,
                 onSelectByName = viewModel::onSelectByName
@@ -44,7 +45,8 @@ fun SearchScreen(
                     passengerNumber = viewModel.passengerNumWrapper(airport.passengers),
                     passengerPercentage = viewModel.getPassengerNumberPercentage(
                         airport.passengers
-                    )
+                    ),
+                    onAirportCardClicked = { onNavigateToAirportRouteSelection(airport) }
                 )
                 HorizontalDivider()
             }
@@ -59,7 +61,8 @@ fun SearchScreen(
                             passengerNumber = viewModel.passengerNumWrapper(airport.passengers),
                             passengerPercentage = viewModel.getPassengerNumberPercentage(
                                 airport.passengers
-                            )
+                            ),
+                            onAirportCardClicked = { onNavigateToAirportRouteSelection(airport) }
                         )
                         HorizontalDivider()
                     }
@@ -74,7 +77,7 @@ fun SearchScreen(
 
 @Composable
 fun FilterSelection(
-    mostVisitedSelected: Boolean,
+    byPassengersSelected: Boolean,
     byNameSelected: Boolean,
     onSelectMostVisited: () -> Unit,
     onSelectByName: () -> Unit,
@@ -83,13 +86,14 @@ fun FilterSelection(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+            .padding(start = 4.dp, top = 4.dp)
+            .padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start)
     ) {
         FilterChipWrapper(
-            selected = mostVisitedSelected,
+            selected = byPassengersSelected,
             onSelectChip = onSelectMostVisited,
-            label = "Most Visited",
+            label = "By Passengers",
         )
         FilterChipWrapper(
             selected = byNameSelected,

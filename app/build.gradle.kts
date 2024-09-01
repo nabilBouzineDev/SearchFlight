@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.devtools.ksp)
+    // Kotlin serialization plugin
+    alias(libs.plugins.jetbrainsKotlinSerialization)
 }
 
 android {
@@ -62,6 +64,10 @@ dependencies {
     implementation(libs.androidx.junit.ktx)
     ksp(libs.androidx.room.compiler)
 
+    // Kotlin serialization
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

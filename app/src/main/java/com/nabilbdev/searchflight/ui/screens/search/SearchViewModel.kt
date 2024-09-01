@@ -30,9 +30,9 @@ data class SearchUiState(
     val errorMessage: String? = null
 )
 
-data class SelectUiState(
+data class SelectFiltersUiState(
     val allAirportList: List<Airport> = emptyList(),
-    val mostVisitedSelected: Boolean = false,
+    val byPassengersSelected: Boolean = false,
     val byNameSelected: Boolean = false,
     val showFilters: Boolean = false,
 )
@@ -50,7 +50,7 @@ class SearchViewModel(
     private val _airportListByQuery = MutableStateFlow<List<Airport>>(emptyList())
     private val _allAirportList = MutableStateFlow<List<Airport>>(emptyList())
     private val _showFilters = MutableStateFlow(false)
-    private val _mostVisitedSelected = MutableStateFlow(false)
+    private val _byPassengersSelected = MutableStateFlow(false)
     private val _byNameSelected = MutableStateFlow(false)
     private val _errorMessage = MutableStateFlow<String?>(null)
     private var _maxPassengerNumber = MutableStateFlow<Long>(0)
@@ -59,16 +59,16 @@ class SearchViewModel(
     /**
      * A Ui State that expose updates related to filtering and get airports list to the UI
      */
-    val selectUiState: StateFlow<SelectUiState> = combine(
-        _allAirportList, _showFilters, _mostVisitedSelected, _byNameSelected
-    ) { allAirportList, showFilters, mostVisitedSelected, byNameSelected ->
-        SelectUiState(
+    val selectFiltersUiState: StateFlow<SelectFiltersUiState> = combine(
+        _allAirportList, _showFilters, _byPassengersSelected, _byNameSelected
+    ) { allAirportList, showFilters, byPassengersSelected, byNameSelected ->
+        SelectFiltersUiState(
             allAirportList = allAirportList,
             showFilters = showFilters,
-            mostVisitedSelected = mostVisitedSelected,
+            byPassengersSelected = byPassengersSelected,
             byNameSelected = byNameSelected
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(TIMEOUT_MILLIS), SelectUiState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(TIMEOUT_MILLIS), SelectFiltersUiState())
 
     /**
      * A Ui State that expose updates related to search and airports list to the UI
@@ -110,7 +110,7 @@ class SearchViewModel(
             .launchIn(viewModelScope)
 
         // Observe the filter option and sort airport list by number of passengers
-        _mostVisitedSelected
+        _byPassengersSelected
             .mapLatest { mostVisitedSelected ->
                 when (mostVisitedSelected) {
                     true -> {
@@ -132,7 +132,7 @@ class SearchViewModel(
             .mapLatest { byNameSelected ->
                 when (byNameSelected) {
                     true -> {
-                        _mostVisitedSelected.value = false
+                        _byPassengersSelected.value = false
                         _allAirportList.value =
                             searchFlightRepository.getAllAirportsOrderedByNameStream()
                                 .first()
@@ -214,12 +214,12 @@ class SearchViewModel(
     }
 
     private fun clearFilters() {
-        _mostVisitedSelected.value = false
+        _byPassengersSelected.value = false
         _byNameSelected.value = false
     }
 
     fun onSelectMostVisited() {
-        _mostVisitedSelected.value = !_mostVisitedSelected.value
+        _byPassengersSelected.value = !_byPassengersSelected.value
     }
 
     fun onSelectByName() {

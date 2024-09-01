@@ -30,15 +30,15 @@ fun CustomCurvedFlightPath(
                 .height(180.dp)
                 .align(Alignment.TopCenter),
         ) {
-            val startX = size.width * 0.25f
-            val endX = size.width * 0.75f
-            val startY = size.height * 0.4f
-            val endY = size.height * 0.4f
-            val controlPointY = 0f // Control point for the curve's height
+            val startX = size.width * 0.2f
+            val endX = size.width * 0.8f
+            val startY = size.height * 0.3f
+            val endY = size.height * 0.3f
+            val controlPointY = -5f // Control point for the curve's height
 
             val path = Path().apply {
                 moveTo(startX, startY)
-                quadraticBezierTo(
+                quadraticTo(
                     size.width * 0.5f,
                     controlPointY, // Control point
                     endX,
@@ -50,11 +50,11 @@ fun CustomCurvedFlightPath(
                 path = path,
                 color = Black,
                 style = Stroke(
-                    width = 7f,
+                    width = 5f,
                     pathEffect = dashPathEffect(
                         floatArrayOf(
-                            25f,
-                            25f
+                            20f,
+                            20f
                         )
                     )
                 )

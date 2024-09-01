@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.nabilbdev.searchflight.R
 import com.nabilbdev.searchflight.data.local.entity.Airport
@@ -41,14 +42,16 @@ fun RouteResultSelection(
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
                 CompactAirportSelection(
                     airport = fromAirport,
                     isFrom = true,
+                    modifier = modifier.weight(0.4f)
                 )
                 CompactAirportSelection(
                     airport = toAirport,
+                    modifier = modifier.weight(0.4f)
                 )
             }
         }
@@ -79,12 +82,20 @@ fun CompactAirportSelection(
         Text(
             text = airport.iataCode,
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = when (isFrom) {
+                true -> TextAlign.Start
+                false -> TextAlign.End
+            }
         )
         Text(
             text = airport.name,
             color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
+            textAlign = when (isFrom) {
+                true -> TextAlign.Start
+                false -> TextAlign.End
+            }
         )
     }
 }

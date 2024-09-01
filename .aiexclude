@@ -1,0 +1,39 @@
+/app/src/main/assets/secrets/*
+/app/src/main/java/**/keys/*
+/app/src/main/res/raw/sensitive_data.txt
+
+# Specific file types you want to exclude
+*.keystore
+*.jks
+*.pem
+*.p12
+
+# API keys and secrets (adjust file names as needed)
+local.properties
+api_keys.xml
+
+# User data folders
+/app/src/main/java/**/user_data/*
+
+# Test folders (often contain sensitive mocks or test data)
+/app/src/androidTest/**
+/app/src/test/**
+
+# Generated code folders (can be large and irrelevant for AI assistance)
+/app/build/**
+
+# Third-party libraries (usually not your code)
+/app/libs/**
+
+# Configuration files with potential sensitive data
+proguard-rules.pro
+
+# Git-related files
+.git/
+.gitignore
+
+# IDE-specific files
+.idea/
+
+# Build system caches
+.gradle/

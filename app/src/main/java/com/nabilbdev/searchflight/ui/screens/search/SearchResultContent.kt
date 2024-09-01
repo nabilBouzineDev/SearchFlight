@@ -34,13 +34,15 @@ fun SearchResultContent(
     passengerNumber: String,
     passengerPercentage: Int,
     modifier: Modifier = Modifier,
+    onAirportCardClicked: () -> Unit = {},
 ) {
     Card(
         modifier = modifier
             .padding(8.dp)
             .fillMaxWidth()
             .wrapContentHeight(Alignment.CenterVertically),
-        shape = CardDefaults.elevatedShape
+        shape = CardDefaults.elevatedShape,
+        onClick = onAirportCardClicked
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
