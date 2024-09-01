@@ -35,6 +35,7 @@ import com.nabilbdev.searchflight.data.local.entity.Airport
 fun RouteBodySelection(
     modifier: Modifier = Modifier,
     otherAirports: List<Airport> = emptyList(),
+    onArrivalAirportSelected: (Airport) -> Unit = {}
 ) {
     Card(
         modifier = modifier
@@ -60,7 +61,8 @@ fun RouteBodySelection(
         ) {
             items(otherAirports) { airport ->
                 SingleAirportSelection(
-                    airport = airport
+                    airport = airport,
+                    onArrivalAirportSelected = { onArrivalAirportSelected(airport) }
                 )
             }
         }
@@ -70,7 +72,8 @@ fun RouteBodySelection(
 @Composable
 fun SingleAirportSelection(
     airport: Airport,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onArrivalAirportSelected: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -115,7 +118,7 @@ fun SingleAirportSelection(
                 contentDescription = null,
                 modifier = Modifier
                     .size(50.dp)
-                    .clickable { /*TODO*/ }
+                    .clickable(onClick = onArrivalAirportSelected)
             )
         }
     }

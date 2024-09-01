@@ -19,7 +19,7 @@ import com.nabilbdev.searchflight.ui.components.CommonAirportVerticalGrid
 fun HomeScreen(
     popularCitiesAirports: List<Airport>,
     isLoadingAirports: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier

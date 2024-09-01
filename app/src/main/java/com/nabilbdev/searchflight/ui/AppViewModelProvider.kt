@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nabilbdev.searchflight.SearchFlightApplication
 import com.nabilbdev.searchflight.ui.screens.home.HomeViewModel
+import com.nabilbdev.searchflight.ui.screens.route.RouteViewModel
 import com.nabilbdev.searchflight.ui.screens.search.SearchViewModel
 
 /**
@@ -22,6 +23,11 @@ object AppViewModelProvider {
         }
         initializer {
             HomeViewModel(
+                searchFlightRepository = searchFLightApplication().container.searchFlightRepository
+            )
+        }
+        initializer {
+            RouteViewModel(
                 searchFlightRepository = searchFLightApplication().container.searchFlightRepository
             )
         }

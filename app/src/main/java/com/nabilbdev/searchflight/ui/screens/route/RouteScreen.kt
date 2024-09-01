@@ -1,26 +1,28 @@
 package com.nabilbdev.searchflight.ui.screens.route
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nabilbdev.searchflight.data.local.entity.Airport
@@ -33,13 +35,19 @@ fun RouteScreen(
     modifier: Modifier = Modifier,
     fromAirport: Airport = AIRPORT_DEFAULT,
     toAirport: Airport = AIRPORT_DEFAULT,
-    otherAirports: List<Airport> = listOf(AIRPORT_DEFAULT, AIRPORT_DEFAULT, AIRPORT_DEFAULT)
+    otherAirports: List<Airport> = listOf(AIRPORT_DEFAULT, AIRPORT_DEFAULT, AIRPORT_DEFAULT),
+    isFavButtonDisabled: Boolean,
+    saveToFavoriteSelected: Boolean,
+    onSaveToFavoriteClicked: () -> Unit = {},
+    onHideBottomSheet: () -> Unit = {},
+    onArrivalAirportSelected: (Airport) -> Unit = {},
 ) {
     val sheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(
         sheetState = sheetState,
-        onDismissRequest = { /*TODO*/ },
+        onDismissRequest = onHideBottomSheet,
+        shape = BottomSheetDefaults.ExpandedShape,
     ) {
         LazyColumn(
             modifier = modifier
@@ -54,12 +62,17 @@ fun RouteScreen(
                 )
             }
             item {
-                RouteBodySelection(
-                    otherAirports = otherAirports
+                FavoriteButtonAddition(
+                    isFavButtonDisabled = isFavButtonDisabled,
+                    saveToFavoriteSelected = saveToFavoriteSelected,
+                    onSaveToFavoriteClicked = onSaveToFavoriteClicked,
                 )
             }
             item {
-                FavoriteButtonAddition()
+                RouteBodySelection(
+                    otherAirports = otherAirports,
+                    onArrivalAirportSelected = onArrivalAirportSelected
+                )
             }
         }
     }
@@ -67,34 +80,53 @@ fun RouteScreen(
 
 @Composable
 fun FavoriteButtonAddition(
-    modifier: Modifier = Modifier
+    isFavButtonDisabled: Boolean,
+    saveToFavoriteSelected: Boolean,
+    modifier: Modifier = Modifier,
+    onSaveToFavoriteClicked: () -> Unit = {}
 ) {
-    Box(
-        modifier = modifier
-            .size(80.dp)
-            .clip(CircleShape)
-            .background(
-                color = Color.Black,
-            )
-            .clickable { /*TODO*/ },
-        contentAlignment = Alignment.Center
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Icon(
-            imageVector = Icons.Rounded.FavoriteBorder,
-            tint = Color.White,
-            contentDescription = null,
-            modifier = Modifier
-                .size(70.dp)
-                .padding(8.dp)
-        )
+        Button(
+            onClick = onSaveToFavoriteClicked,
+            enabled = !isFavButtonDisabled,
+            colors = ButtonColors(
+                containerColor = Color.Black,
+                contentColor = Color.White,
+                disabledContentColor = Color.White,
+                disabledContainerColor = Color.LightGray
+            )
+        ) {
+            Text(
+                text = "SAVE TO FAVORITES",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+        AnimatedVisibility(visible = saveToFavoriteSelected, exit = fadeOut()) {
+            Box(
+                contentAlignment = Alignment.Center,
+            ) {
+                LinearProgressIndicator(
+                    color = Color.Black,
+                    trackColor = Color.LightGray,
+                )
+            }
+        }
     }
 }
 
-
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
-fun SelectRouteScreenPreview() {
+fun FavoriteButtonAdditionPreview() {
     MaterialTheme {
-        RouteScreen()
+        FavoriteButtonAddition(
+            isFavButtonDisabled = true,
+            saveToFavoriteSelected = false
+        )
     }
 }

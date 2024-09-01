@@ -25,15 +25,16 @@ import com.nabilbdev.searchflight.ui.components.ShowFilterDropdownMenu
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MySearchBar(
-    query: String,
-    errorMessage: String?,
-    allAirportsList: List<Airport>,
-    airportListByQuery: List<Airport>,
-    showFiltersSelected: Boolean,
-    mostVisitedSelected: Boolean,
-    byNameSelected: Boolean,
+    modifier: Modifier = Modifier,
+    query: String = "",
+    errorMessage: String? = null,
+    allAirportsList: List<Airport> = emptyList(),
+    airportListByQuery: List<Airport> = emptyList(),
+    showFiltersSelected: Boolean = false,
+    byPassengersSelected: Boolean = false,
+    byNameSelected: Boolean = false,
     viewModel: SearchViewModel,
-    modifier: Modifier = Modifier
+    onAirportSelected: (Airport) -> Unit = {}
 ) {
     var active by remember { mutableStateOf(false) }
 
@@ -96,9 +97,10 @@ fun MySearchBar(
             allAirportsList = allAirportsList,
             airportListByQuery = airportListByQuery,
             showFiltersSelected = showFiltersSelected,
-            mostVisitedSelected = mostVisitedSelected,
+            byPassengersSelected = byPassengersSelected,
             byNameSelected = byNameSelected,
-            viewModel = viewModel
+            viewModel = viewModel,
+            onNavigateToAirportRouteSelection = onAirportSelected
         )
     }
 }
