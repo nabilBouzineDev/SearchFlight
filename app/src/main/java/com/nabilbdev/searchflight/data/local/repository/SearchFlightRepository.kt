@@ -14,13 +14,13 @@ interface SearchFlightRepository {
 
     fun getAirportByCodeStream(airportCode: String): Flow<Airport?>
 
-    fun getAllFavoriteAirportsStream(): Flow<List<Favorite>>
-
     fun getAllAirportsStream(): Flow<List<Airport>>
 
     fun getAllAirportsOrderedByPassengersStream(): Flow<List<Airport>>
 
     fun getAllAirportsOrderedByNameStream(): Flow<List<Airport>>
+
+    fun getAllFavoriteAirportsStream(): Flow<List<Favorite>>
 
     suspend fun insertFavoriteAirport(favorite: Favorite)
 
@@ -41,9 +41,6 @@ class OfflineSearchFlightRepository(
     override fun getAirportByCodeStream(airportCode: String): Flow<Airport?> =
         airportDAO.getAirportByCode(airportCode)
 
-    override fun getAllFavoriteAirportsStream(): Flow<List<Favorite>> =
-        favoriteDAO.getAllFavoriteAirports()
-
     override fun getAllAirportsStream(): Flow<List<Airport>> =
         airportDAO.getAllAirports()
 
@@ -52,6 +49,9 @@ class OfflineSearchFlightRepository(
 
     override fun getAllAirportsOrderedByNameStream(): Flow<List<Airport>> =
         airportDAO.getAllAirportsOrderedByName()
+
+    override fun getAllFavoriteAirportsStream(): Flow<List<Favorite>> =
+        favoriteDAO.getAllFavoriteAirports()
 
     override suspend fun insertFavoriteAirport(favorite: Favorite) =
         favoriteDAO.insert(favorite)
