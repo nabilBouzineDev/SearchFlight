@@ -6,7 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nabilbdev.searchflight.data.local.entity.Favorite
 import com.nabilbdev.searchflight.ui.AppViewModelProvider
+import com.nabilbdev.searchflight.ui.screens.favorite.FavoriteScreen
+import com.nabilbdev.searchflight.ui.screens.favorite.FavoriteUiState
+import com.nabilbdev.searchflight.ui.screens.favorite.FavoriteViewModel
 import com.nabilbdev.searchflight.ui.screens.home.HomeScreen
 import com.nabilbdev.searchflight.ui.screens.home.HomeUiState
 import com.nabilbdev.searchflight.ui.screens.home.HomeViewModel
@@ -25,6 +29,7 @@ fun SearchFlightApp() {
     val searchVM: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val homeVM: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val routeVM: RouteViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val favoriteVM: FavoriteViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     val searchUiState: SearchUiState = searchVM.searchUiState.collectAsStateWithLifecycle().value
     val selectFiltersUiState: SelectFiltersUiState =
@@ -34,6 +39,9 @@ fun SearchFlightApp() {
     val routeUiState: RouteUiState = routeVM.routeUiState.collectAsStateWithLifecycle().value
     val routeFavButtonUiState: RouteFavButtonUiState =
         routeVM.routeFavButtonUiState.collectAsStateWithLifecycle().value
+
+    val favoriteUiState: FavoriteUiState =
+        favoriteVM.favoriteUiState.collectAsStateWithLifecycle().value
 
     Scaffold(
         topBar = {
@@ -62,15 +70,24 @@ fun SearchFlightApp() {
                     onArrivalAirportSelected = routeVM::selectArrivalAirport,
                     saveToFavoriteSelected = routeFavButtonUiState.saveToFavoriteSelected,
                     isFavButtonDisabled = routeFavButtonUiState.isFavoriteDisabled,
-                    onSaveToFavoriteClicked = routeVM::onSaveToFavoriteClicked
+                    onSaveToFavoriteClicked = { favorite ->
+                        favoriteVM.saveToFavorites(favorite)
+                        routeVM.onSaveToFavoriteClicked()
+                    }
                 )
             }
 
             false -> {
-                HomeScreen(
+                /*HomeScreen(
                     modifier = Modifier.padding(innerPadding),
                     popularCitiesAirports = homeUiState.popularCityAirports,
                     isLoadingAirports = homeUiState.isLoadingPopularCityAirports
+                )*/
+                FavoriteScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    statusMessage = favoriteUiState.statusMessage,
+                    favoriteRoutes = favoriteUiState.favoriteAirports,
+                    viewModel = favoriteVM
                 )
             }
         }

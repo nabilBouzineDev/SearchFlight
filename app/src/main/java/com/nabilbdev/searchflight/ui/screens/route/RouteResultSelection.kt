@@ -2,11 +2,7 @@ package com.nabilbdev.searchflight.ui.screens.route
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,43 +15,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.nabilbdev.searchflight.R
 import com.nabilbdev.searchflight.data.local.entity.Airport
-import com.nabilbdev.searchflight.ui.components.CustomCurvedFlightPath
-import com.nabilbdev.searchflight.ui.screens.search.utils.AIRPORT_DEFAULT
+import com.nabilbdev.searchflight.ui.components.FavoriteRouteTicket
 
 @Composable
 fun RouteResultSelection(
-    modifier: Modifier = Modifier,
-    fromAirport: Airport = AIRPORT_DEFAULT,
-    toAirport: Airport = AIRPORT_DEFAULT
+    fromAirport: Airport,
+    toAirport: Airport,
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(24.dp),
-        shape = CardDefaults.elevatedShape,
-        elevation = CardDefaults.elevatedCardElevation(),
-        colors = CardDefaults.elevatedCardColors(),
-    ) {
-        CustomCurvedFlightPath {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                CompactAirportSelection(
-                    airport = fromAirport,
-                    isFrom = true,
-                    modifier = modifier.weight(0.4f)
-                )
-                CompactAirportSelection(
-                    airport = toAirport,
-                    modifier = modifier.weight(0.4f)
-                )
-            }
-        }
-    }
+    FavoriteRouteTicket(
+        fromAirport = fromAirport,
+        toAirport = toAirport
+    )
 }
 
 @Composable
