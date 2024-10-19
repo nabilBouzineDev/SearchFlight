@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nabilbdev.searchflight.data.local.entity.Airport
+import com.nabilbdev.searchflight.data.local.entity.Favorite
 import com.nabilbdev.searchflight.ui.screens.search.utils.AIRPORT_DEFAULT
 
 
@@ -38,7 +39,7 @@ fun RouteScreen(
     otherAirports: List<Airport> = listOf(AIRPORT_DEFAULT, AIRPORT_DEFAULT, AIRPORT_DEFAULT),
     isFavButtonDisabled: Boolean,
     saveToFavoriteSelected: Boolean,
-    onSaveToFavoriteClicked: () -> Unit = {},
+    onSaveToFavoriteClicked: (Favorite) -> Unit = {},
     onHideBottomSheet: () -> Unit = {},
     onArrivalAirportSelected: (Airport) -> Unit = {},
 ) {
@@ -65,7 +66,14 @@ fun RouteScreen(
                 FavoriteButtonAddition(
                     isFavButtonDisabled = isFavButtonDisabled,
                     saveToFavoriteSelected = saveToFavoriteSelected,
-                    onSaveToFavoriteClicked = onSaveToFavoriteClicked,
+                    onSaveToFavoriteClicked = {
+                        onSaveToFavoriteClicked(
+                            Favorite(
+                                departureCode = fromAirport.iataCode,
+                                destinationCode = toAirport.iataCode
+                            )
+                        )
+                    },
                 )
             }
             item {
