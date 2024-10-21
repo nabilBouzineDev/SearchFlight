@@ -19,4 +19,9 @@ interface FavoriteDAO {
 
     @Query("SELECT * FROM favorite")
     fun getAllFavoriteAirports(): Flow<List<Favorite>>
+
+    @Query("SELECT * FROM favorite WHERE departure_code = :departureCode AND destination_code = :destinationCode")
+    fun getFavoriteByDepartureCodeAndDestinationCode(
+        departureCode: String, destinationCode: String
+    ): Flow<Favorite>
 }
