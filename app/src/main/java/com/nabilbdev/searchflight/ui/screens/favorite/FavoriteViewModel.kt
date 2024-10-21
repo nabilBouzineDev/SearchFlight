@@ -55,6 +55,7 @@ class FavoriteViewModel(
     private fun fetchFavoriteAirports() {
         viewModelScope.launch {
             searchFlightRepository.getAllFavoriteAirportsStream().collect { favoriteAirports ->
+
                 val favoritePair = favoriteAirports.map { favorite ->
                     val departureAirport = searchFlightRepository
                         .getAirportByCodeStream(favorite.departureCode)
@@ -83,6 +84,7 @@ class FavoriteViewModel(
     }
 
     fun saveToFavorites(favorite: Favorite) {
+      
         if (
             _favoriteAirports.value
                 .any {
@@ -129,7 +131,7 @@ class FavoriteViewModel(
         _deletedOrNoFavoriteStatusMessage.value = null
         _favoriteStatus.value = FavoriteStatus.NONE
     }
-
+    
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }

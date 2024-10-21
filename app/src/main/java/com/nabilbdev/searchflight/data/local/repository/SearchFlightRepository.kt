@@ -26,7 +26,7 @@ interface SearchFlightRepository {
         departureCode: String,
         destinationCode: String
     ): Flow<Favorite?>
-
+  
     suspend fun insertFavoriteAirport(favorite: Favorite)
 
     suspend fun deleteFavoriteAirport(favorite: Favorite)

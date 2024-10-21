@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nabilbdev.searchflight.data.local.entity.Favorite
 import com.nabilbdev.searchflight.ui.AppViewModelProvider
 import com.nabilbdev.searchflight.ui.screens.favorite.FavoriteScreen
 import com.nabilbdev.searchflight.ui.screens.favorite.FavoriteUiState
@@ -55,7 +56,7 @@ fun SearchFlightApp() {
         favoriteVM.favoriteUiState.collectAsStateWithLifecycle().value
 
     val snackBarHostState = remember { SnackbarHostState() }
-
+    
     Scaffold(
         snackbarHost = {
             Box(
@@ -92,6 +93,7 @@ fun SearchFlightApp() {
                     toAirport = routeUiState.toAirport,
                     otherAirports = routeUiState.otherAirports,
                     isFavButtonDisabled = routeFavButtonUiState.isFavoriteDisabled,
+
                     clearMessageAndButtonSelection = {
                         favoriteVM.clearFavoriteStatusAndMessage()
                     },
@@ -101,6 +103,11 @@ fun SearchFlightApp() {
                     },
                     onHideBottomSheet = routeVM::hideSelectionBottomSheet,
                     onArrivalAirportSelected = routeVM::selectArrivalAirport
+                  
+                    onSaveToFavoriteClicked = { favorite ->
+                        favoriteVM.saveToFavorites(favorite)
+                        routeVM.onSaveToFavoriteClicked()
+                    }
                 )
             }
 
