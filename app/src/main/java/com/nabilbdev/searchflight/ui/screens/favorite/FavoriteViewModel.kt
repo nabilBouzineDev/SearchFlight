@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.nabilbdev.searchflight.data.local.entity.Airport
 import com.nabilbdev.searchflight.data.local.entity.Favorite
 import com.nabilbdev.searchflight.data.local.repository.SearchFlightRepository
+import com.nabilbdev.searchflight.utils.FavoriteStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 data class FavoriteUiState(
     val favoriteAirports: List<Pair<Airport, Airport>> = emptyList(),
     val deletedOrNoFavoriteStatusMessage: String? = null,
-    val addedOrAlreadyAddedStatusMessage: String? = null,
+    val favoriteStatus: FavoriteStatus = FavoriteStatus.NONE,
 )
 
 class FavoriteViewModel(
@@ -31,19 +32,19 @@ class FavoriteViewModel(
 
     private val _favoriteAirports = MutableStateFlow<List<Pair<Airport, Airport>>>(emptyList())
     private val _deletedOrNoFavoriteStatusMessage = MutableStateFlow<String?>(null)
-    private val _addedOrAlreadyAddedStatusMessage = MutableStateFlow<String?>(null)
+    private val _favoriteStatus = MutableStateFlow<FavoriteStatus>(FavoriteStatus.NONE)
 
     var isCurrentlyDragging by mutableStateOf(false)
         private set
 
     val favoriteUiState: StateFlow<FavoriteUiState> = combine(
-        _favoriteAirports, _deletedOrNoFavoriteStatusMessage, _addedOrAlreadyAddedStatusMessage
-    ) { favoriteAirports, deletedOrNoFavoriteStatusMessage, addedOrAlreadyAddedStatusMessage ->
+        _favoriteAirports, _deletedOrNoFavoriteStatusMessage, _favoriteStatus
+    ) { favoriteAirports, deletedOrNoFavoriteStatusMessage, favoriteStatus ->
 
         FavoriteUiState(
             favoriteAirports = favoriteAirports,
             deletedOrNoFavoriteStatusMessage = deletedOrNoFavoriteStatusMessage,
-            addedOrAlreadyAddedStatusMessage = addedOrAlreadyAddedStatusMessage
+            favoriteStatus = favoriteStatus
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(TIMEOUT_MILLIS), FavoriteUiState())
 
@@ -52,7 +53,6 @@ class FavoriteViewModel(
     }
 
     private fun fetchFavoriteAirports() {
-        clearStatusMessage()
         viewModelScope.launch {
             searchFlightRepository.getAllFavoriteAirportsStream().collect { favoriteAirports ->
                 val favoritePair = favoriteAirports.map { favorite ->
@@ -71,12 +71,12 @@ class FavoriteViewModel(
                     Pair(departureAirport, destinationAirport)
                 }
 
+                _favoriteAirports.value = favoritePair
 
-                if (favoritePair.isEmpty()) {
-                    _deletedOrNoFavoriteStatusMessage.value = "No favorites yet!"
-                    _favoriteAirports.value = emptyList()
+                _deletedOrNoFavoriteStatusMessage.value = if (_favoriteAirports.value.isEmpty()) {
+                    "No favorites yet!"
                 } else {
-                    _favoriteAirports.value = favoritePair
+                    null
                 }
             }
         }
@@ -90,12 +90,12 @@ class FavoriteViewModel(
                             it.second.iataCode == favorite.destinationCode
                 }
         ) {
-            _addedOrAlreadyAddedStatusMessage.value = "FAVORITE ALREADY SAVED"
+            _favoriteStatus.value = FavoriteStatus.DUPLICATED
             return
         }
         viewModelScope.launch {
             searchFlightRepository.insertFavoriteAirport(favorite)
-            _addedOrAlreadyAddedStatusMessage.value = "ADDED TO FAVORITES"
+            _favoriteStatus.value = FavoriteStatus.ADDED
         }
     }
 
@@ -107,11 +107,12 @@ class FavoriteViewModel(
                     destinationCode = favoriteRoute.second.iataCode
                 )
                 .filterNotNull()
-                .firstOrNull()
+                .firstOrNull() // Change here to safely fetch the favorite
 
             if (favorite != null) {
                 searchFlightRepository.deleteFavoriteAirport(favorite)
                 _deletedOrNoFavoriteStatusMessage.value = "Deleted successfully!"
+                fetchFavoriteAirports() // Refresh the favorites list
             }
         }
     }
@@ -124,9 +125,9 @@ class FavoriteViewModel(
         isCurrentlyDragging = false
     }
 
-    fun clearStatusMessage() {
+    fun clearFavoriteStatusAndMessage() {
         _deletedOrNoFavoriteStatusMessage.value = null
-        _addedOrAlreadyAddedStatusMessage.value = null
+        _favoriteStatus.value = FavoriteStatus.NONE
     }
 
     companion object {

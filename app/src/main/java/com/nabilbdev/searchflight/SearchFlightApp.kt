@@ -86,11 +86,15 @@ fun SearchFlightApp() {
         when (routeUiState.airportResultSelected) {
             true -> {
                 RouteScreen(
+                    favoriteStatus = favoriteUiState
+                        .favoriteStatus,
                     fromAirport = routeUiState.fromAirport,
                     toAirport = routeUiState.toAirport,
                     otherAirports = routeUiState.otherAirports,
                     isFavButtonDisabled = routeFavButtonUiState.isFavoriteDisabled,
-                    saveToFavoriteSelected = routeFavButtonUiState.saveToFavoriteSelected,
+                    clearMessageAndButtonSelection = {
+                        favoriteVM.clearFavoriteStatusAndMessage()
+                    },
                     onSaveToFavoriteClicked = { favorite ->
                         favoriteVM.saveToFavorites(favorite)
                         routeVM.onSaveToFavoriteClicked()

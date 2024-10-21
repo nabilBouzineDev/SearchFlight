@@ -31,6 +31,7 @@ import com.nabilbdev.searchflight.data.local.entity.Airport
 import com.nabilbdev.searchflight.ui.components.FavoriteRouteTicket
 import com.nabilbdev.searchflight.utils.DragTarget
 import com.nabilbdev.searchflight.utils.DropItem
+import kotlinx.coroutines.delay
 
 @Composable
 fun FavoriteScreen(
@@ -111,7 +112,8 @@ fun BinDropItem(
     LaunchedEffect(key1 = statusMessage) {
         statusMessage?.let {
             snackBarHostState.showSnackbar(statusMessage)
-            viewModel.clearStatusMessage()
+            delay(3000)
+            viewModel.clearFavoriteStatusAndMessage()
         }
     }
 
