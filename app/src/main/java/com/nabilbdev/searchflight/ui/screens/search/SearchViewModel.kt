@@ -26,6 +26,8 @@ import kotlin.math.round
 
 data class SearchUiState(
     val searchQuery: String = "",
+    val activeSearchBar: Boolean = false,
+    val isHomeSearchCardClicked: Boolean = false,
     val airportListByQuery: List<Airport> = emptyList(),
     val errorMessage: String? = null
 )
@@ -47,6 +49,8 @@ class SearchViewModel(
      * A set of observable data holders: holds data from flows observed in Room DB.
      */
     private val _searchQuery = MutableStateFlow("")
+    private val _activeSearchBar = MutableStateFlow(false)
+    private val _isHomeSearchCardClicked = MutableStateFlow(false)
     private val _airportListByQuery = MutableStateFlow<List<Airport>>(emptyList())
     private val _allAirportList = MutableStateFlow<List<Airport>>(emptyList())
     private val _showFilters = MutableStateFlow(false)
@@ -68,22 +72,30 @@ class SearchViewModel(
             byPassengersSelected = byPassengersSelected,
             byNameSelected = byNameSelected
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(TIMEOUT_MILLIS), SelectFiltersUiState())
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        SelectFiltersUiState()
+    )
 
     /**
      * A Ui State that expose updates related to search and airports list to the UI
      */
     val searchUiState: StateFlow<SearchUiState> = combine(
         _searchQuery,
+        _activeSearchBar,
+        _isHomeSearchCardClicked,
         _airportListByQuery,
         _errorMessage
-    ) { searchQuery, airportListByQuery, errorMessage ->
+    ) { searchQuery, activeSearchBar, isHomeSearchCardClicked, airportListByQuery, errorMessage ->
 
         if (searchQuery.isBlank())
             clearSearch()
 
         SearchUiState(
             searchQuery = searchQuery,
+            activeSearchBar = activeSearchBar,
+            isHomeSearchCardClicked = isHomeSearchCardClicked,
             airportListByQuery = airportListByQuery,
             errorMessage = errorMessage
         )
@@ -229,6 +241,21 @@ class SearchViewModel(
     fun onShowFilters() {
         clearFilters()
         _showFilters.value = !_showFilters.value
+    }
+
+    fun onSearchActiveChange() {
+        _activeSearchBar.value = !_activeSearchBar.value
+        _isHomeSearchCardClicked.value = false
+    }
+
+    fun onShowSearchBarActiveByHomeCard() {
+        _isHomeSearchCardClicked.value = true
+        _activeSearchBar.value = true
+    }
+
+    fun clearSearchBarActivity() {
+        clearSearch()
+        _activeSearchBar.value = false
     }
 
     companion object {

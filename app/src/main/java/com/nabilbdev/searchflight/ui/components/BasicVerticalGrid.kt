@@ -3,6 +3,7 @@ package com.nabilbdev.searchflight.ui.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,7 +23,8 @@ fun CommonAirportVerticalGrid(
     airportList: List<Airport>,
     imageVector: ImageVector,
     modifier: Modifier = Modifier,
-    isLoadingAirports: Boolean = false
+    isLoadingAirports: Boolean = false,
+    onSearchClick: (String) -> Unit
 ) {
     AnimatedVisibility(visible = isLoadingAirports, exit = fadeOut()) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -32,7 +34,8 @@ fun CommonAirportVerticalGrid(
     AnimatedVisibility(visible = !isLoadingAirports, enter = fadeIn()) {
         CustomVerticalGrid(
             airportList = airportList,
-            imageVector = imageVector
+            imageVector = imageVector,
+            onSearchClick = onSearchClick
         )
     }
 }
@@ -44,7 +47,8 @@ fun CommonAirportVerticalGrid(
 fun CustomVerticalGrid(
     airportList: List<Airport>,
     imageVector: ImageVector,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSearchClick: (String) -> Unit
 ) {
     Column {
         airportList.chunked(2).forEach { halfList ->
@@ -56,6 +60,7 @@ fun CustomVerticalGrid(
                         modifier = Modifier
                             .weight(1f)
                             .padding(4.dp)
+                            .clickable { onSearchClick(airport.name) }
                     )
                 }
             }
