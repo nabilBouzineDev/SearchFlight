@@ -70,6 +70,8 @@ fun SearchFlightApp() {
         topBar = {
             MySearchBar(
                 query = searchUiState.searchQuery,
+                active = searchUiState.activeSearchBar,
+                isHomeSearchCardClicked = searchUiState.isHomeSearchCardClicked,
                 errorMessage = searchUiState.errorMessage,
                 allAirportsList = selectFiltersUiState.allAirportList,
                 airportListByQuery = searchUiState.airportListByQuery,
@@ -113,6 +115,10 @@ fun SearchFlightApp() {
                     HomeScreen(
                         popularCitiesAirports = homeUiState.popularCityAirports,
                         isLoadingAirports = homeUiState.isLoadingPopularCityAirports,
+                        onSearchClick = { search ->
+                            searchVM.onShowSearchBarActiveByHomeCard()
+                            searchVM.setNewSearchQuery(search)
+                        }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     DraggableScreen(

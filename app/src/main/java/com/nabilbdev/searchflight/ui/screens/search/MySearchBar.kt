@@ -13,10 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nabilbdev.searchflight.data.local.entity.Airport
@@ -27,6 +23,8 @@ import com.nabilbdev.searchflight.ui.components.ShowFilterDropdownMenu
 fun MySearchBar(
     modifier: Modifier = Modifier,
     query: String = "",
+    active: Boolean,
+    isHomeSearchCardClicked: Boolean,
     errorMessage: String? = null,
     allAirportsList: List<Airport> = emptyList(),
     airportListByQuery: List<Airport> = emptyList(),
@@ -36,7 +34,6 @@ fun MySearchBar(
     viewModel: SearchViewModel,
     onAirportSelected: (Airport) -> Unit = {}
 ) {
-    var active by remember { mutableStateOf(false) }
 
     SearchBar(
         modifier = when (active) {
@@ -51,17 +48,21 @@ fun MySearchBar(
         onQueryChange = { newWord -> viewModel.setNewSearchQuery(newWord) },
         onSearch = {/*Navigate to search routes*/ },
         active = active,
-        onActiveChange = { inactive -> active = inactive },
+        onActiveChange = {
+            if (isHomeSearchCardClicked)
+                viewModel.onShowSearchBarActiveByHomeCard()
+            else
+                viewModel.onSearchActiveChange()
+        },
         placeholder = { Text(text = "Search departures...") },
         leadingIcon = {
             if (active) {
-
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = "Back",
                     modifier = Modifier.clickable {
                         viewModel.clearSearch()
-                        active = false
+                        viewModel.clearSearchBarActivity()
                     }
                 )
             } else {

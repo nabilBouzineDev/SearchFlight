@@ -15,7 +15,8 @@ import com.nabilbdev.searchflight.ui.components.CommonAirportVerticalGrid
 fun HomeScreen(
     popularCitiesAirports: List<Airport>,
     isLoadingAirports: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSearchClick: (String) -> Unit
 ) {
     Box(
         modifier = modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp),
@@ -24,7 +25,8 @@ fun HomeScreen(
         CommonAirportVerticalGrid(
             airportList = popularCitiesAirports,
             isLoadingAirports = isLoadingAirports,
-            imageVector = Icons.Outlined.Search
+            imageVector = Icons.Outlined.Search,
+            onSearchClick = onSearchClick
         )
     }
 }
