@@ -86,6 +86,11 @@ fun FavoriteScreen(
                             FavoriteRouteTicket(
                                 fromAirport = favoriteRouteItem.first,
                                 toAirport = favoriteRouteItem.second,
+                                containerColor =
+                                if (viewModel.isCurrentlyDragging && viewModel.isOverDropItem)
+                                    Color.Red.copy(.65f)
+                                else
+                                    MaterialTheme.colorScheme.surfaceContainer,
                                 modifier = Modifier
                                     .width(325.dp)
                             )
@@ -131,6 +136,7 @@ fun BinDropItem(
                 }
             }
             if (isInBound) {
+                viewModel.onDropItem()
                 BinIconDropItem(iconColor = Color.Red)
             } else {
                 BinIconDropItem(iconColor = Color.DarkGray)

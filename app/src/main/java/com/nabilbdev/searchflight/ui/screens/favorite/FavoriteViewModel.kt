@@ -32,9 +32,12 @@ class FavoriteViewModel(
 
     private val _favoriteAirports = MutableStateFlow<List<Pair<Airport, Airport>>>(emptyList())
     private val _deletedOrNoFavoriteStatusMessage = MutableStateFlow<String?>(null)
-    private val _favoriteStatus = MutableStateFlow<FavoriteStatus>(FavoriteStatus.NONE)
+    private val _favoriteStatus = MutableStateFlow(FavoriteStatus.NONE)
 
     var isCurrentlyDragging by mutableStateOf(false)
+        private set
+
+    var isOverDropItem by mutableStateOf(false)
         private set
 
     val favoriteUiState: StateFlow<FavoriteUiState> = combine(
@@ -121,15 +124,21 @@ class FavoriteViewModel(
 
     fun startDragging() {
         isCurrentlyDragging = true
+        isOverDropItem = false
     }
 
     fun stopDragging() {
         isCurrentlyDragging = false
+        isOverDropItem = false
     }
 
     fun clearFavoriteStatusAndMessage() {
         _deletedOrNoFavoriteStatusMessage.value = null
         _favoriteStatus.value = FavoriteStatus.NONE
+    }
+
+    fun onDropItem() {
+        isOverDropItem = true
     }
 
     companion object {
