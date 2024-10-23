@@ -19,4 +19,18 @@ class FakeFavoriteDAO : FavoriteDAO {
     override fun getAllFavoriteAirports(): Flow<List<Favorite>> = flow {
         emit(favoriteAirports)
     }
+
+    override fun getFavoriteByDepartureCodeAndDestinationCode(
+        departureCode: String,
+        destinationCode: String
+    ): Flow<Favorite> = flow {
+
+        val favorite =
+            favoriteAirports.filter {
+                it.departureCode == departureCode
+                        && it.destinationCode == destinationCode
+            }
+
+        emit(favorite[0])
+    }
 }
