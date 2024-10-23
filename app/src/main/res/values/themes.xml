@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.SearchFlight" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.SplashScreen" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/orange</item>
+        <item name="android:windowBackground">@drawable/app_bg</item>
+    </style>
 </resources>
