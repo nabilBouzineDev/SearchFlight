@@ -28,8 +28,8 @@
 
   ## Demo
   > [!TIP]
-  > demo will be added here ...
-
+  > <video width="100" src="https://github.com/user-attachments/assets/891f0549-4cd9-4a9f-b27d-a4c788dd468e" type="video/mp4" autoplay="autoplay" loop="loop"></video>
+  
   ## Screenshots
   > [!TIP]  
   > | Home screen | Search screen | Filter screen | Selection screen | Error screen |
